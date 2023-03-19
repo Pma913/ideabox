@@ -1,29 +1,21 @@
 // ***** Query Selectors *****
-var titleInput = document.querySelector('#inputTitle');
-var bodyInput = document.querySelector('#inputBody');
-var saveButton = document.querySelector('#buttonSave');
-var savedIdeasSection = document.querySelector('#savedIdeasCards');
-var showStarredButton = document.querySelector('#showStarredButton');
-var searchInput = document.querySelector('#inputSearch');
+const titleInput = document.querySelector('#inputTitle');
+const bodyInput = document.querySelector('#inputBody');
+const saveButton = document.querySelector('#buttonSave');
+const savedIdeasSection = document.querySelector('#savedIdeasCards');
+const showStarredButton = document.querySelector('#showStarredButton');
+const searchInput = document.querySelector('#inputSearch');
 
 // ***** Data Model ********
-var savedIdeas = [];
-var newIdea;
+const savedIdeas = [];
+let newIdea;
 
-// ***** Event Listeners *******
-saveButton.addEventListener('click', saveIdea);
-titleInput.addEventListener('input', buttonChange);
-bodyInput.addEventListener('input', buttonChange);
-savedIdeasSection.addEventListener('click', deleteIdea);
-savedIdeasSection.addEventListener('click', starIdea);
-showStarredButton.addEventListener('click', showStarred);
-searchInput.addEventListener('input', filterSavedIdeas);
 
 // ***** Event Handlers *******
 saveButton.disabled = true;
 showStarredButton.disabled = true;
 
-function buttonChange (event) {
+const buttonChange = (event) => {
   event.preventDefault();
   if (titleInput.value && bodyInput.value) {
     saveButton.disabled = false;
@@ -32,12 +24,12 @@ function buttonChange (event) {
   }
 }
 
-function emptyInputs() {
+const emptyInputs = () => {
   titleInput.value = '';
   bodyInput.value = '';
 }
 
-function saveIdea(event) {
+const saveIdea = (event) => {
   event.preventDefault();
   newIdea = new Idea(titleInput.value, bodyInput.value);
   savedIdeas.push(newIdea);
@@ -64,7 +56,7 @@ function saveIdea(event) {
   saveButton.style.background = '#353567';
 }
 
-function deleteIdea (event) {
+const deleteIdea = (event) => {
   var ideaId = parseInt(event.target.closest('section').id);
 
   for (var i = 0; i < savedIdeas.length; i++) {
@@ -75,7 +67,7 @@ function deleteIdea (event) {
   }
 }
 
-function starIdea (event) {
+const starIdea = (event) => {
   var ideaId = parseInt(event.target.closest('section').id);
 
   for (var i = 0; i < savedIdeas.length; i++) {
@@ -97,14 +89,14 @@ function starIdea (event) {
   showStarredButton.classList.add('cursor');
 }
 
-function showStarred () {
+const showStarred = () => {
   if (showStarredButton.innerText === 'Show Starred Ideas') {
     showStarredButton.innerText = 'Show All Ideas';
     for (var i = 0; i < savedIdeas.length; i++) {
       var idea = document.getElementById(savedIdeas[i].id);
 
       if (!savedIdeas[i].starred) {
-        idea.classList.add('hidden');
+        idea.classList.toggle('hidden');
       }
     }
   } else {
@@ -113,22 +105,31 @@ function showStarred () {
       var idea = document.getElementById(savedIdeas[i].id);
       
       if (!savedIdeas[i].starred) {
-        idea.classList.remove('hidden');
+        idea.classList.toggle('hidden');
       }
     }
   }
 }
 
-function filterSavedIdeas() {
-  var characters = searchInput.value.toUpperCase();
+const filterSavedIdeas = () => {
+  const characters = searchInput.value.toUpperCase();
   
-  for (var i = 0; i < savedIdeas.length; i++) {
-    var idea = document.getElementById(savedIdeas[i].id);
-    
-    if (!savedIdeas[i].title.toUpperCase().includes(characters) && !savedIdeas[i].body.toUpperCase().includes(characters)) {
+  savedIdeas.forEach(element => {
+    const idea = document.getElementById(element.id);
+  
+    if (!element.title.toUpperCase().includes(characters) && !element.body.toUpperCase().includes(characters)) {
      idea.classList.add('hidden');
     } else {
      idea.classList.remove('hidden');
     }
-  }
+  }); 
 }
+
+// ***** Event Listeners *******
+saveButton.addEventListener('click', saveIdea);
+titleInput.addEventListener('input', buttonChange);
+bodyInput.addEventListener('input', buttonChange);
+savedIdeasSection.addEventListener('click', deleteIdea);
+savedIdeasSection.addEventListener('click', starIdea);
+showStarredButton.addEventListener('click', showStarred);
+searchInput.addEventListener('input', filterSavedIdeas);
